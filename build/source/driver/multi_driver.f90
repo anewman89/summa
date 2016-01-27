@@ -152,6 +152,8 @@ type(var_d),allocatable   :: upArea(:)                      ! area upslope of ea
 real(dp)                  :: fracHRU                        ! fractional area of a given HRU (-)
 integer(i4b)              :: hruCount                       ! number of hrus in a gru
 integer(i4b)              :: hru_ix                         ! index of a hru in entire domain
+integer(i4b)              :: forcNcid=-999                  ! netcdf id for current netcdf forcing file
+integer(i4b)              :: iFile=1                        ! index of current forcing file from forcing file list
 real(dp),allocatable      :: zSoilReverseSign(:)            ! height at bottom of each soil layer, negative downwards (m)
 real(dp),dimension(12)    :: greenVegFrac_monthly           ! fraction of green vegetation in each month (0-1)
 real(dp),parameter        :: doubleMissing=-9999._dp        ! missing value
@@ -228,7 +230,7 @@ end do
 ! *****************************************************************************
 ! (4a) read description of model forcing datafile used in each HRU
 ! *****************************************************************************
-call ffile_info(nGRU,nHRU,err,message); call handle_err(err,message)
+call ffile_info(nHRU,err,message); call handle_err(err,message)
 
 ! *****************************************************************************
 ! (4b) read model decisions
@@ -406,11 +408,10 @@ do istep=1,numtim
    time_data => time_gru(iGRU)%hru(iHRU)
    forc_data => forc_gru(iGRU)%hru(iHRU)
    ! read forcing data
-   call read_force(istep,iHRU,err,message); call handle_err(err,message)
+   call read_force(istep,iGRU,iHRU,iFile,forcNcid,err,message); call handle_err(err,message)
   end do  ! (end looping through HRUs)
  end do   ! (end looping through GRUs)
  print*, time_data%var
-
 
  ! *****************************************************************************
  ! (7) create a new NetCDF output file, and write parameters and forcing data
