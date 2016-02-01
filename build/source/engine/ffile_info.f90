@@ -116,7 +116,6 @@ contains
   forcFileInfo(iFile)%data_ix(:) = imiss
   ! build filename bfor actual forcing file
   infile = trim(INPUT_PATH)//trim(forcFileInfo(iFile)%filenmDesc)
-  !print*, 'infile = ', trim(infile)
   ! open file
   mode=nf90_NoWrite
   call nc_file_open(trim(infile), mode, ncid, err, cmessage)
@@ -136,7 +135,7 @@ contains
    err = nf90_inq_dimid(ncid,'nHRU',dimId)
    if(err/=0)then; message=trim(message)//'nHRU dimension not present'; return; endif
    err = nf90_inquire_dimension(ncid,dimId,len=file_nHRU)
-   if(file_nHRU /= nHRU)then; write(message,'(a,i0,a,i0)') trim(message)//'File HRU dimension:',file_nHRU ,'not equal to nHRU:',nHRU; return; endif
+   if(file_nHRU /= nHRU)then; err=20;write(message,'(a,i0,a,i0)') trim(message)//'File HRU dimension: ',file_nHRU ,'not equal to nHRU: ',nHRU; return; endif
 print *,'current var',iNC,trim(varName)
    select case(trim(varName))
     case('data_step' )

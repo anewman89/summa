@@ -129,7 +129,7 @@ contains
   if(err/=0)then;err=40;message=trim(message)//"problemInternalRead[data='"//trim(charline(iHRU))//"']"; return; endif
   ! get the HRU index
   read(chardata(1),*,iostat=err) hruIndex
-  if(err/=0)then;err=40;message=trim(message)//"problemInternalRead[data='"//trim(chardata(1))//"']"; return; endif
+  if(err/=0)then;err=41;message=trim(message)//"problemInternalRead[data='"//trim(chardata(1))//"']"; return; endif
   ! identify the HRU index to assign the parameters to mpar_gru
   do jHRU=1,nHRU ! jHRU loop
    kGRU=index_map(jHRU)%gru_ix
@@ -163,7 +163,7 @@ contains
    if(jpar<=0)then; err=40; message=trim(message)//"cannotFindVariableIndex[name='"//trim(varnames(ipar))//"']"; return; endif
    ! populate the appropriate element of the parameter vector
    read(chardata(ipar),*,iostat=err) mpar_data%var(jpar)
-   if(err/=0)then;err=40;message=trim(message)//"problemInternalRead[data='"//trim(chardata(ipar))//"']"; return; endif
+   if(err/=0)then;err=42;message=trim(message)//"problemInternalRead[data='"//trim(chardata(ipar))//"']"; return; endif
    !print*, trim(varnames(ipar)), mpar_data%var(jpar)
   end do    ! (looping through model parameters)
   !write(*,'(a,2(i4,1x),2(f20.10,1x))') 'in read_param 2: iHRU, kHRU, mpar_data%var(iLookPARAM%zmaxLayer1_upper), mpar_hru(kHRU)%var(iLookPARAM%zmaxLayer1_upper) = ', &
