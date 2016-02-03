@@ -39,6 +39,7 @@ contains
  subroutine writeAttrb(fileout,iHRU,err,message)
  USE data_struc,only:attr_data,attr_meta                   ! local attributes
  USE data_struc,only:type_data,type_meta                   ! local classification of veg, soil, etc.
+ USE netcdf_util_module,only:netcdf_err                    ! netcdf error handling function
  implicit none
  ! declare dummy variables
  character(*), intent(in)    :: fileout                    ! output file
@@ -97,6 +98,7 @@ contains
  ! public subroutine writeParam: write model parameters
  ! **********************************************************************************************************
  subroutine writeParam(fileout,iHRU,err,message)
+ USE netcdf_util_module,only:netcdf_err                    ! netcdf error handling function
  USE data_struc,only:mpar_data,mpar_meta                   ! local-column model parameter structures
  USE data_struc,only:bpar_data,bpar_meta                   ! basin-average model parameter structures
  implicit none
@@ -157,6 +159,7 @@ contains
  ! public subroutine writeParam: write model forcing data
  ! **********************************************************************************************************
  subroutine writeForce(fileout,iHRU,istep,err,message)
+ USE netcdf_util_module,only:netcdf_err                    ! netcdf error handling function
  USE data_struc,only:forc_data,forc_meta                   ! forcing data structures
  USE var_lookup,only:iLookFORCE                            ! identifies element of the forcing structure
  implicit none
@@ -217,6 +220,7 @@ contains
  ! public subroutine writeModel: write local column model variables
  ! **********************************************************************************************************
  subroutine writeModel(fileout,iHRU,istep,err,message)
+ USE netcdf_util_module,only:netcdf_err                    ! netcdf error handling function
  USE data_struc,only:indx_data,indx_meta                   ! index data structures
  USE data_struc,only:mvar_data,mvar_meta                   ! model data structures
  USE var_lookup,only:iLookINDEX                            ! identifies element of the index structure
@@ -315,6 +319,7 @@ contains
  ! public subroutine writeBasin: write basin-average variables
  ! **********************************************************************************************************
  subroutine writeBasin(fileout,istep,err,message)
+ USE netcdf_util_module,only:netcdf_err                    ! netcdf error handling function
  USE data_struc,only:bvar_data,bvar_meta                   ! model data structures
  USE var_lookup,only:iLookINDEX                            ! identifies element of the index structure
  implicit none
@@ -362,25 +367,5 @@ contains
  ! close output file
  err = nf90_close(ncid); call netcdf_err(err,message); if (err/=0) return
  end subroutine writeBasin
-
-
- ! **********************************************************************************************************
- ! private subroutine netcdf_err: error control
- ! **********************************************************************************************************
- subroutine netcdf_err(err,message)
- ! used to handle errors for NetCDF calls
- implicit none
- ! declare dummies
- integer(i4b), intent(inout)   :: err
- character(*), intent(inout)   :: message
- ! start procedure here
- if (err/=nf90_noerr) then
-  message=trim(message)//"["//trim(nf90_strerror(err))//"]"
-  err=200
- else
-  err=0
- endif
- end subroutine netcdf_err
-
 
 end module modelwrite_module

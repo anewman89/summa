@@ -107,6 +107,8 @@ USE mDecisions_module,only:&                                ! look-up values for
 USE mDecisions_module,only:&                                ! look-up values for the choice of method for the spatial representation of groundwater
  localColumn, & ! separate groundwater representation in each local soil column
  singleBasin    ! single groundwater store over the entire basin
+! named constans
+USE multiconst,only:integerMissing                   ! missing value for integers
 implicit none
 
 ! *****************************************************************************
@@ -152,8 +154,9 @@ type(var_d),allocatable   :: upArea(:)                      ! area upslope of ea
 real(dp)                  :: fracHRU                        ! fractional area of a given HRU (-)
 integer(i4b)              :: hruCount                       ! number of hrus in a gru
 integer(i4b)              :: hru_ix                         ! index of a hru in entire domain
-integer(i4b)              :: forcNcid=-999                  ! netcdf id for current netcdf forcing file
+integer(i4b)              :: forcNcid=integerMissing        ! netcdf id for current netcdf forcing file
 integer(i4b)              :: iFile=1                        ! index of current forcing file from forcing file list
+integer(i4b)              :: forcingStep=-999               ! index of current time step in current forcing file
 real(dp),allocatable      :: zSoilReverseSign(:)            ! height at bottom of each soil layer, negative downwards (m)
 real(dp),dimension(12)    :: greenVegFrac_monthly           ! fraction of green vegetation in each month (0-1)
 real(dp),parameter        :: doubleMissing=-9999._dp        ! missing value
@@ -408,7 +411,9 @@ do istep=1,numtim
    time_data => time_gru(iGRU)%hru(iHRU)
    forc_data => forc_gru(iGRU)%hru(iHRU)
    ! read forcing data
-   call read_force(istep,iGRU,iHRU,iFile,forcNcid,err,message); call handle_err(err,message)
+   call read_force(istep,iGRU,iHRU,iFile,forcingStep,forcNcid,err,message); call handle_err(err,message)
+   !increment forcingStep
+   forcingStep=forcingStep+1
   end do  ! (end looping through HRUs)
  end do   ! (end looping through GRUs)
  print*, time_data%var

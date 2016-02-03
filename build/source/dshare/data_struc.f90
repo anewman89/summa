@@ -39,12 +39,12 @@ MODULE data_struc
  ! ***********************************************************************************************************
  ! define a derived type for the data in the file
  type,public  :: file_info
-  character(len=256)                     :: filenmDesc='notPopulatedYet' ! name of file that describes the data
   character(len=256)                     :: filenmData='notPopulatedYet' ! name of data file
-  integer(i4b)                           :: ncols                    ! number of columns in the file
-  integer(i4b)                           :: ixFirstHRU               ! index of the first HRU to share the same data
-  integer(i4b),pointer                   :: time_ix(:) => null()     ! column index for each time variable
-  integer(i4b),pointer                   :: data_ix(:) => null()     ! column index for each forcing data variable
+  integer(i4b)                           :: nVars                    ! number of variables in the file
+  integer(i4b)                           :: nTimeSteps               ! number of variables in the file
+  integer(i4b),pointer                   :: data_id(:) => null()     ! netcdf variable id for each forcing data variable
+  character(len=256),pointer             :: varName(:) => null()     ! netcdf variable name for each forcing data variable
+  real(dp)                               :: firstJulDay              ! first julian day in forcing file
  end type file_info
  ! and save all the data in a single data structure
  ! NOTE: vector (HRU dimension)
