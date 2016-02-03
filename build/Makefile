@@ -134,7 +134,10 @@ DATAMS = $(patsubst %, $(DSHARE_DIR)/%, $(SUMMA_DATAMS))
 
 # utility modules
 SUMMA_UTILMS= \
-		time_utils.f90
+		get_ixname.f90 \
+		time_utils.f90 \
+		ascii_util.f90 \
+		mDecisions.f90
 UTILMS = $(patsubst %, $(ENGINE_DIR)/%, $(SUMMA_UTILMS))
 
 # Model guts
@@ -145,7 +148,7 @@ MODGUT = $(patsubst %, $(ENGINE_DIR)/%, $(SUMMA_MODGUT))
 SUMMA_SOLVER= \
 		vegPhenlgy.f90 \
 		diagn_evar.f90 \
-        stomResist.f90 \
+		stomResist.f90 \
 		groundwatr.f90 \
 		vegSWavRad.f90 \
 		vegNrgFlux.f90 \
@@ -157,14 +160,17 @@ SUMMA_SOLVER= \
 		coupled_em.f90
 SOLVER = $(patsubst %, $(ENGINE_DIR)/%, $(SUMMA_SOLVER))
 
+# Define NetCDF routines
+SUMMA_NETCDF = \
+		netcdf_util.f90 \
+		def_output.f90 \
+		modelwrite.f90
+NETCDF = $(patsubst %, $(NETCDF_DIR)/%, $(SUMMA_NETCDF))
+
 # Define routines for SUMMA preliminaries
 SUMMA_PRELIM= \
 		conv_funcs.f90 \
-		netcdf_util.f90 \
-		ascii_util.f90 \
 		sunGeomtry.f90 \
-		get_ixname.f90 \
-		mDecisions.f90 \
 		snow_utils.f90 \
 		soil_utils.f90 \
 		updatState.f90 \
@@ -206,17 +212,11 @@ MODRUN = $(patsubst %, $(ENGINE_DIR)/%, $(SUMMA_MODRUN))
 # Define routines for the solver
 SUMMA_MSOLVE = \
 
-# Define NetCDF routines
-SUMMA_NETCDF = \
-		def_output.f90 \
-		modelwrite.f90
-NETCDF = $(patsubst %, $(NETCDF_DIR)/%, $(SUMMA_NETCDF))
-
 # ... stitch together common programs
 COMM_ALL = $(NRUTIL) $(NRPROC) $(HOOKUP) $(DATAMS) $(UTILMS)
 
 # ... stitch together SUMMA programs
-SUMMA_ALL = $(PRELIM) $(MODRUN) $(SOLVER) $(NETCDF)
+SUMMA_ALL = $(NETCDF) $(PRELIM) $(MODRUN) $(SOLVER)
 
 # Define the driver routine
 SUMMA_DRIVER= \
