@@ -251,7 +251,7 @@ print *,'Opening new forcing file: ',trim(infile),'step ',iRead
   err = nf90_get_var(ncid,varId,dataJulDay,start=(/iRead/))
   if(err/=0)then; message=trim(message)//'trouble getting time value'; return; endif
   dataJulDay = dataJulDay + refJulday
- !print *,'reading step',iRead,currentJulday,abs(currentJulday - dataJulDay),epsilon(julDayFirst)
+! print *,'reading step',iRead,iHRU,currentJulday,abs(currentJulday - dataJulDay),epsilon(julDayFirst)
   if(abs(currentJulday - dataJulDay) > 1e-9)then
    write(message,'(a,i0,f18.8,a,f18.8,a)') trim(message)//'date for time step: ',iStep,dataJulDay,' differs from the expected date: ',currentJulDay,' in file: '//trim(infile)
    err=40; return

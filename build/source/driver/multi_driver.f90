@@ -412,10 +412,11 @@ do istep=1,numtim
    forc_data => forc_gru(iGRU)%hru(iHRU)
    ! read forcing data
    call read_force(istep,iGRU,iHRU,iFile,forcingStep,forcNcid,err,message); call handle_err(err,message)
-   !increment forcingStep
-   forcingStep=forcingStep+1
   end do  ! (end looping through HRUs)
  end do   ! (end looping through GRUs)
+ !increment forcingStep
+ forcingStep=forcingStep+1
+
  print*, time_data%var
 
  ! *****************************************************************************
