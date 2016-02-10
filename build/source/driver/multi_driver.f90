@@ -402,8 +402,7 @@ do istep=1,numtim
  ! set print flag
  globalPrintFlag=.false.
 
- ! read a line of forcing data (if not already opened, open file, and get to the correct place)
- ! NOTE: only read data once: if same data used for multiple HRUs, data is copied across
+ ! read a time step of forcing data for all HRUs
  do iGRU=1,nGRU
   hruCount= gru_struc(iGRU)%hruCount
   do iHRU=1,nHRU  ! loop through HRUs
@@ -414,7 +413,7 @@ do istep=1,numtim
    call read_force(istep,iGRU,iHRU,iFile,forcingStep,forcNcid,err,message); call handle_err(err,message)
   end do  ! (end looping through HRUs)
  end do   ! (end looping through GRUs)
- !increment forcingStep
+ ! increment forcingStep
  forcingStep=forcingStep+1
 
  print*, time_data%var

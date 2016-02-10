@@ -51,23 +51,21 @@ contains
  integer(i4b),intent(out)             :: err            ! error code
  character(*),intent(out)             :: message        ! error message
  ! define local variables
- !netcdf file i/o related
+ ! netcdf file i/o related
  integer(i4b)                         :: ncid            ! netcdf file id
  integer(i4b)                         :: mode            ! netCDF file open mode
  integer(i4b)                         :: varid           ! netcdf variable id
  integer(i4b)                         :: dimId           ! netcdf dimension id
- character(LEN=nf90_max_name)         :: varName        ! character array of netcdf variable name
+ character(LEN=nf90_max_name)         :: varName         ! character array of netcdf variable name
  integer(i4b)                         :: iNC             ! index of a variable in netcdf file
  integer(i4b)                         :: nvar            ! number of variables in netcdf local attribute file
- !the rest
-
+ ! the rest
  character(LEN=1024),allocatable      :: dataLines(:)   ! vector of lines of information (non-comment lines)
  character(len=256)                   :: cmessage       ! error message for downwind routine
  character(LEN=256)                   :: infile         ! input filename
  integer(i4b),parameter               :: unt=99         ! DK: need to either define units globally, or use getSpareUnit
  integer(i4b),parameter               :: maxLines=1000000  ! maximum lines in the file
  character(LEN=256)                   :: filenameData   ! name of forcing datafile
-
  integer(i4b)                         :: ivar           ! index of model variable
  integer(i4b)                         :: iFile          ! counter for forcing files
  integer(i4b)                         :: nFile          ! number of forcing files in forcing file list
@@ -98,6 +96,8 @@ contains
   ! set forcing file name attribute
   forcFileInfo(iFile)%filenmData = trim(filenameData)
  enddo  ! (looping through files)
+ ! close ascii file
+ close(unit=unt,iostat=err); if(err/=0)then;message=trim(message)//'problem closing forcing file list'; return; endif
  ! ------------------------------------------------------------------------------------------------------------------
  ! (2) pull descriptive information from netcdf forcing file and check number of HRUs in each forcing file matches nHRU
  ! ------------------------------------------------------------------------------------------------------------------
@@ -133,7 +133,7 @@ contains
   err = nf90_inquire_dimension(ncid,dimId,len=file_nHRU)
   if(err/=0)then; message=trim(message)//'nHRU inquiry problem'; return; endif
   if(file_nHRU /= nHRU)then; err=20;write(message,'(a,i0,a,i0)') trim(message)//'File HRU dimension: ',file_nHRU ,'not equal to nHRU: ',nHRU; return; endif
- ! inquire time dimension size
+  ! inquire time dimension size
   err = nf90_inq_dimid(ncid,'time',dimId)
   if(err/=0)then; message=trim(message)//'time dimension not present'; return; endif
   err = nf90_inquire_dimension(ncid,dimId,len=forcFileInfo(iFile)%nTimeSteps)
@@ -193,7 +193,7 @@ print *,'forcFileInfo%varName: ',trim(forcFileInfo(iFile)%varName(ivar))
      err = nf90_inq_varid(ncid,trim(varname),varId)
      if(err/=0)then; message=trim(message)//'hruID variable not present'; return; endif
    end select
-  enddo ! (end of netecdf file variable loop)
+  enddo ! (end of netcdf file variable loop)
 
   ! check to see if any forcing variables are missed
   if(any(forcFileInfo(iFile)%data_id(:)==integerMissing))then
